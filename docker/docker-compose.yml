@@ -1,0 +1,133 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.38
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: config5566
+      MYSQL_DATABASE: yys_aivideo
+      MYSQL_USER: user
+      MYSQL_PASSWORD: config5566
+    volumes:
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pconfig5566"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - videonetworks
+
+  redis:
+    container_name: redis
+    image: redis:7.2
+    ports:
+      - "6380:6379"
+    volumes:
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - videonetworks
+
+  es:
+    container_name: es
+    image: elasticsearch:8.14.3
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ports:
+      - "9222:9200"
+      - "9333:9300"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - videonetworks
+
+  minio:
+    container_name: minio
+    image: minio/minio:latest
+    ports:
+      - "9005:9000"
+      - "9010:9001"
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: admin123
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio-data:/data
+    networks:
+      - videonetworks
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:4.0
+    ports:
+      - "15673:15672"  # 映射 RabbitMQ 管理界面
+      - "5673:5672"    # 映射 RabbitMQ 消息队列
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    command: >
+      bash -c "rabbitmq-plugins enable rabbitmq_management && rabbitmq-server"
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - videonetworks
+
+  app:
+    container_name: app
+    image: ai_video:v1.4
+    ports:
+      - "35300:35300"
+    volumes:
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/config/nginx.conf:/etc/nginx/nginx.conf
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/config/application.yml:/opt/aivideo/java-service/application.yml
+      -  ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/config/config.yaml:/opt/aivideo/python-service/config/config.yaml
+    # links:
+    #   - mysql:mysql
+    #   - redis:redis
+    #   - es:es
+    #   - minio:minio
+    #   - rabbitmq:rabbitmq
+    networks:
+      - videonetworks
+    depends_on:
+      - mysql
+      - redis
+      - es
+      - minio
+      - rabbitmq
+
+networks:
+  videonetworks:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
+  es-data:
+  minio-data:
+  rabbitmq-data:
+  config:
+
