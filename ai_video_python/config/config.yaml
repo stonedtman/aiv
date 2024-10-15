@@ -1,0 +1,12 @@
+minio:
+  endpoint: localhost:9000
+  access_key: admin
+  secret_key: admin123
+  secure: false
+
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+  queue: training_updates
