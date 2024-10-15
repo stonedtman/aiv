@@ -1,0 +1,143 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4626850 */
+  src: url('iconfont.woff2?t=1723714443994') format('woff2'),
+       url('iconfont.woff?t=1723714443994') format('woff'),
+       url('iconfont.ttf?t=1723714443994') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-appshipinquanping:before {
+  content: "\e76b";
+}
+
+.icon-laba:before {
+  content: "\e643";
+}
+
+.icon-tuichuquanping:before {
+  content: "\e792";
+}
+
+.icon-quanping1:before {
+  content: "\e7cf";
+}
+
+.icon-yanjing-guan:before {
+  content: "\e6fb";
+}
+
+.icon-gitee-fill-round:before {
+  content: "\e686";
+}
+
+.icon-xingzhuang:before {
+  content: "\e60f";
+}
+
+.icon-list:before {
+  content: "\e630";
+}
+
+.icon-weixin1:before {
+  content: "\e660";
+}
+
+.icon-yuandian:before {
+  content: "\e607";
+}
+
+.icon-jiaotongshigu:before {
+  content: "\e9c2";
+}
+
+.icon-xiaoneipanpalangan:before {
+  content: "\e689";
+}
+
+.icon-weiguitingche:before {
+  content: "\e606";
+}
+
+.icon-gaojingrizhi90:before {
+  content: "\e72a";
+}
+
+.icon-alarm:before {
+  content: "\e69e";
+}
+
+.icon-bukong:before {
+  content: "\e645";
+}
+
+.icon-gaojingshijian:before {
+  content: "\e69d";
+}
+
+.icon-OpenDoor1x:before {
+  content: "\e663";
+}
+
+.icon-huishouzhan:before {
+  content: "\e608";
+}
+
+.icon-yanwu:before {
+  content: "\e735";
+}
+
+.icon-weisite:before {
+  content: "\e623";
+}
+
+.icon-miehuoqiextinguisher:before {
+  content: "\e64a";
+}
+
+.icon-maozi:before {
+  content: "\e601";
+}
+
+.icon-dress-copy:before {
+  content: "\e602";
+}
+
+.icon-diandongche:before {
+  content: "\e604";
+}
+
+.icon-truck:before {
+  content: "\e609";
+}
+
+.icon-shuijue-:before {
+  content: "\e603";
+}
+
+.icon-waidaodiedao-xian:before {
+  content: "\e605";
+}
+
+.icon-weixin:before {
+  content: "\e64f";
+}
+
+.icon-youxiang:before {
+  content: "\e908";
+}
+
+.icon-icon-test:before {
+  content: "\e600";
+}
+
+.icon-chakanxiangqing:before {
+  content: "\e616";
+}
+
