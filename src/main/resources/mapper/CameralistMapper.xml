@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yys.mapper.CameralistMapper">
+
+
+
+    <update id="updateCamera">
+        UPDATE ai_camera
+        SET
+            camera_location = #{cameraLocation},
+            camera_group = #{cameraGroup},
+            <if test="cameraResolution != null and cameraResolution != ''">
+                camera_resolution = #{cameraResolution},
+            </if>
+            <if test="cameraStatus != null and cameraStatus != ''">
+                camera_status = #{cameraStatus},
+            </if>
+            <if test="cameraProtocol != null and cameraProtocol != ''">
+                camera_protocol = #{cameraProtocol},
+            </if>
+            <if test="lastTime != null and lastTime != ''">
+                last_time = #{lastTime},
+            </if>
+            <if test="ipAddress != null and ipAddress != ''">
+                ip_address = #{ipAddress},
+            </if>
+            <if test="cameraPort != null and cameraPort != ''">
+                camera_port = #{cameraPort},
+            </if>
+            video_streaming = #{videoStreaming}
+        WHERE camera_id = #{cameraId}
+    </update>
+
+    <select id="selectCameralist" resultType="com.yys.entity.AiCamera">
+        SELECT
+            camera_id ,
+            camera_location ,
+            cs.group_name ,
+            camera_resolution ,
+            camera_protocol ,
+            camera_status ,
+            working_time ,
+            camera_img,
+            video_streaming,
+            last_time
+        FROM
+            ai_camera ac
+        LEFT JOIN
+            camera_sector cs
+        on ac.camera_group = cs.id
+        WHERE 1=1
+            <if test="gId != null and gId !=''">
+                AND camera_group = #{gId}
+            </if>
+        ORDER BY
+            ac.id
+        DESC
+        LIMIT #{pageNum}, #{pageSize}
+    </select>
+
+    <select id="selectCameralistGroup" resultType="com.yys.entity.CameraGroups">
+        SELECT
+            cs.group_id ,
+            cs.group_name ,
+            COUNT(ac.id) AS videosums,
+            SUM(CASE WHEN ac.camera_status = 1 THEN 1 ELSE 0 END) AS workingsums,
+            cs.create_time ,
+            cs.update_time
+        FROM
+            camera_sector cs
+        LEFT JOIN
+            ai_camera ac ON cs.id = ac.camera_group
+        WHERE 1=1
+            <if test="groupName != null and groupName != ''">
+            AND group_name = #{groupName}
+            </if>
+        GROUP BY
+            cs.group_id,
+            cs.group_name,
+            cs.create_time,
+            cs.update_time
+        ORDER BY
+            cs.create_time
+        DESC
+        <if test="pageNum != null and pageSize != null">
+            LIMIT #{pageNum}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="selectCameraMsg" resultType="com.yys.entity.AiCamera">
+        SELECT
+            ac.id,
+            ac.camera_id ,
+            ac.camera_location ,
+            cs.group_name ,
+            ac.camera_port,
+            ac.camera_resolution ,
+            ac.camera_protocol ,
+            ac.camera_status ,
+            ac.working_time ,
+            ac.ip_address,
+            ac.type_input,
+            ac.video_streaming,
+            ac.working_time,
+            ac.last_time
+        FROM
+            ai_camera ac
+        LEFT JOIN
+            camera_sector cs
+        on ac.camera_group = cs.id
+        WHERE camera_id = #{cameraId}
+    </select>
+
+    <resultMap id="GroupCamerasMap" type="com.yys.entity.GroupCamerasDTO">
+        <result property="groupId" column="id"/>
+        <result property="groupName" column="group_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="cameras" ofType="com.yys.entity.CameraDTO">
+            <result property="cameraId" column="camera_id"/>
+            <result property="cameraLocation" column="camera_location"/>
+            <result property="cameraResolution" column="camera_resolution"/>
+            <result property="cameraProtocol" column="camera_protocol"/>
+            <result property="cameraStatus" column="camera_status"/>
+            <result property="workingTime" column="working_time"/>
+            <result property="lastTime" column="last_time"/>
+            <result property="ipAddress" column="ip_address"/>
+            <result property="cameraPort" column="camera_port"/>
+            <result property="videoStreaming" column="video_streaming"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectGroupMsg" resultMap="GroupCamerasMap">
+        SELECT
+            cs.group_name,
+            cs.group_id,
+            cs.create_time,
+            cs.update_time,
+            ac.camera_id,
+            ac.camera_location,
+            ac.camera_resolution,
+            ac.camera_protocol,
+            ac.camera_status,
+            ac.working_time,
+            ac.last_time,
+            ac.ip_address,
+            ac.camera_port,
+            ac.video_streaming
+        FROM
+            camera_sector cs
+                INNER JOIN
+            ai_camera ac
+            ON
+                cs.id = ac.camera_group
+        WHERE
+		   cs.group_id = #{groupId};
+    </select>
+    <select id="selectCameralistCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM ai_camera
+        WHERE 1=1
+        <if test="gId != null and gId !=''">
+            AND camera_group = #{gId}
+        </if>
+    </select>
+    <select id="selectCameraGroupExists" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            ai_camera ac
+        left join
+            camera_sector  cs
+        on
+            ac.camera_group = cs.id
+        WHERE ac.camera_location = #{cameraLocation}
+        AND cs.id = #{cameraGroup}
+    </select>
+
+    <insert id="insertCameralistCount">
+        INSERT INTO camera_sector
+            (group_id, group_name, create_time,update_time)
+        VALUES (#{groupId}, #{groupName}, #{createTime}, #{createTime})
+    </insert>
+
+    <insert id="insertCamera">
+        INSERT INTO ai_camera
+        (camera_id, camera_location, camera_group, camera_resolution, camera_status, camera_protocol, working_time, last_time,   video_streaming
+        <if test="cameraImg != null">
+            , camera_img
+        </if>
+        )
+        VALUES (
+        #{cameraId}, #{cameraLocation}, #{cameraGroup}, #{cameraResolution}, #{cameraStatus}, #{cameraProtocol}, #{workingTime}, #{workingTime}, #{videoStreaming}
+        <if test="cameraImg != null">
+            , #{cameraImg}
+        </if>
+        )
+    </insert>
+    <insert id="insterModel" parameterType="com.yys.entity.AiModels" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ai_model
+        (model, model_location,  model_source, model_version, create_time, update_time)
+        VALUES (#{model}, #{modelLocation}, 1,#{modelVersion}, #{createTime}, #{updateTime})
+    </insert>
+
+
+</mapper>

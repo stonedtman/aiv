@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yys.mapper.CreatedetectiontaskMapper">
+
+
+    <insert id="insertDetectiontask">
+        INSERT INTO detection_task
+        (task_id,
+        task_name,
+        camera_position,
+        alert_level,
+        notification_email,
+        create_time,
+        ids,
+        alert_method,
+        status
+        <if test="taskDescription != null and taskDescription != ''">
+            , task_description
+        </if>
+        <if test="startTime != null and startTime != ''">
+            , start_time
+        </if>
+        <if test="taskTagging != null and taskTagging != ''">
+            , task_tagging
+        </if>
+        )
+        VALUES (
+        #{taskId},
+        #{taskName},
+        #{cameraPosition},
+        #{alertLevel},
+        #{notificationEmail},
+        #{createTime},
+        #{ids},
+        "邮箱",
+        #{status}
+        <if test="taskDescription != null and taskDescription != ''">
+            , #{taskDescription}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            , #{startTime}
+        </if>
+        <if test="taskTagging != null and taskTagging != ''">
+            , #{taskTagging}
+        </if>
+        )
+    </insert>
+    <update id="updateDetectiontasktag">
+        UPDATE
+            detection_task
+        SET
+            task_tagging = #{taskTagging},
+            status = #{status}
+        <if test="startTime != null and startTime != ''">
+            , start_time = #{startTime}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            , end_time = #{endTime}
+        </if>
+        WHERE
+            id = #{id}
+    </update>
+    <delete id="deleteModelById">
+        DELETE FROM ai_model WHERE id = #{id}
+    </delete>
+
+    <select id="selectModel" resultType="com.yys.entity.AiModels">
+        SELECT
+            id,
+            model_location,
+            model_name,
+            model
+        FROM
+            ai_model
+        WHERE
+            id in (#{ids})
+    </select>
+
+    <select id="selectAimodels" resultType="com.yys.entity.AiModels">
+        SELECT
+            id,
+            model_name
+        FROM
+            ai_model
+    </select>
+    <select id="selectModelById" resultType="com.yys.entity.AiModels">
+        SELECT
+            *
+        FROM
+            ai_model
+        WHERE
+            id = #{id}
+    </select>
+
+    <update id="toupdateDetectiontask">
+        UPDATE detection_task
+        SET
+        camera_position=#{cameraPosition},
+        alert_level = #{alertLevel},
+        notification_email = #{notificationEmail},
+        ids = #{ids},
+        alert_method = "",
+        task_name = #{taskName},
+        <if test="taskDescription != null and taskDescription != ''">
+            task_description = #{taskDescription},
+        </if>
+        <if test="startTime != null and startTime != ''">
+            start_time = #{startTime},
+        </if>
+        <if test="taskTagging != null and taskTagging != ''">
+            task_tagging = #{taskTagging},
+        </if>
+        status = #{status}
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

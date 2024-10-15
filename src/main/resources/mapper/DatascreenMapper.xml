@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yys.mapper.DatascreenMapper">
+
+    <resultMap id="GroupCamerasMap" type="com.yys.entity.GroupCamerasDTO">
+        <result property="id" column="csid"/>
+        <result property="groupId" column="group_id"/>
+        <result property="groupName" column="group_name"/>
+        <collection property="cameras" ofType="com.yys.entity.CameraDTO">
+            <result property="id" column="scid"/>
+            <result property="cameraId" column="camera_id"/>
+            <result property="cameraLocation" column="camera_location"/>
+            <result property="cameraStatus" column="camera_status"/>
+            <result property="videoStreaming" column="video_streaming"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectCameralistGroup" resultMap="GroupCamerasMap">
+        SELECT
+            cs.id as csid,
+            cs.group_id,
+            cs.group_name,
+            ac.id as scid,
+            ac.camera_id,
+            ac.camera_location,
+            ac.camera_status,
+            ac.video_streaming
+        FROM
+            camera_sector cs
+        LEFT JOIN
+            ai_camera ac
+        ON
+            cs.id = ac.camera_group
+        ORDER BY
+            cs.group_name, ac.camera_location
+    </select>
+
+
+</mapper>

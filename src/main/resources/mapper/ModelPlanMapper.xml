@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yys.mapper.ModelPlanMapper">
+
+
+    <resultMap id="modelPlanResultMap" type="com.yys.entity.ModelPlan">
+        <id property="id" column="id"/>
+        <result property="modelId" column="model_id"/>
+        <result property="modelName" column="model_name"/>
+        <result property="modelExplain" column="model_explain"/>
+        <result property="imgs" column="imgs"/>
+        <result property="imgTest" column="img_test"/>
+        <result property="imgDetail" column="img_detail"/>
+        <result property="testResult" column="test_result"/>
+        <result property="scene" column="scene"/>
+
+        <!-- 处理多对多关系 -->
+        <collection property="aiModels" ofType="com.yys.entity.AiModels">
+            <result property="modelVersion" column="model_version"/>
+            <result property="modelSource" column="model_source"/>
+            <result property="updateTime" column="update_time"/>
+        </collection>
+
+    </resultMap>
+    <insert id="insertModelPlan">
+        INSERT INTO model_plan(model_id,model_name,model_explain,imgs,img_test,img_detail,test_result,scene)
+        VALUES(#{modelId},#{modelName},#{modelExplain},#{imgs},#{imgTest},#{imgDetail},#{testResult},#{scene})
+    </insert>
+
+    <insert id="insterTypes">
+        INSERT INTO ai_model_type (model_type)
+        VALUES (#{modelType})
+    </insert>
+
+    <delete id="deleteModelPlan">
+        DELETE FROM model_plan WHERE id = #{Id}
+    </delete>
+
+    <select id="getMainMsgList" resultMap="modelPlanResultMap">
+        SELECT
+            mp.id,
+            mp.model_id,
+            mp.model_name,
+            mp.model_explain,
+            mp.imgs,
+            am.model_source,
+            mp.scene
+        FROM
+            model_plan mp
+        left join
+            ai_model am
+        on
+            mp.model_id=am.id
+        WHERE 1=1
+        <if test="scene != null and scene != ''">
+            AND scene LIKE CONCAT('%', #{scene}, '%')
+        </if>
+        order by
+            id desc
+    </select>
+
+
+    <select id="getModelPlan" resultMap="modelPlanResultMap">
+        SELECT
+        mp.id,
+        mp.model_name,
+        mp.model_explain,
+        mp.imgs,
+        mp.img_test,
+        mp.test_result,
+        mp.scene,
+        am.model_source,
+        am.model_version,
+        am.update_time
+        FROM
+            model_plan mp
+        LEFT JOIN
+            ai_model am
+        ON
+            mp.model_id = am.id
+        WHERE 1=1
+        <if test="Id != null and Id != ''">
+            AND mp.id = #{Id}
+        </if>
+    </select>
+    <select id="gettheModelPlan" resultType="com.yys.entity.ModelPlan">
+        SELECT
+            *
+        FROM
+            model_plan
+        WHERE
+            id = #{Id}
+    </select>
+
+
+</mapper>

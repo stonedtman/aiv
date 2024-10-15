@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yys.mapper.UntilMapper">
+
+    <resultMap id="GroupadressMap" type="com.yys.entity.DefaultaddressDTO">
+        <result property="cameraLocation" column="manufactor"/>
+        <collection property="agreements" ofType="com.yys.entity.AgreementDTO">
+            <result property="agreement" column="agreement"/>
+            <result property="address" column="address"/>
+        </collection>
+    </resultMap>
+
+    <select id="getaddress" resultMap="GroupadressMap">
+        SELECT
+            da.manufactor,
+            a.agreement,
+            a.address
+        FROM
+            defaultaddress da
+                JOIN
+            middletable mt ON da.id = mt.defaultaddressid
+                JOIN
+            agreement a ON mt.agreementid = a.id;
+    </select>
+</mapper>

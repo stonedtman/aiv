@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yys.mapper.DetectionTaskMapper">
+
+    <resultMap id="DetectionTaskMap" type="com.yys.entity.DetectionTask">
+        <result property="id" column="id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="cameraPosition" column="camera_position"/>
+        <result property="taskDescription" column="task_description"/>
+        <result property="priority" column="priority"/>
+        <result property="alertMethod" column="alert_method"/>
+        <result property="alertLevel" column="alert_level"/>
+        <result property="notificationEmail" column="notification_email"/>
+        <result property="targetCountThreshold" column="target_count_threshold"/>
+        <result property="targetDwellTime" column="target_dwell_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="status" column="status"/>
+        <result property="taskTagging" column="task_tagging"/>
+        <result property="videoStreaming" column="video_streaming"/>
+        <result property="groupName" column="group_name"/>
+        <result property="ids" column="ids"/>
+
+        <collection property="aiModels" ofType="com.yys.entity.AiModels">
+            <result property="modelName" column="model_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectDetectionTasks" resultMap="DetectionTaskMap">
+        SELECT
+        dt.id ,
+        dt.task_id ,
+        dt.task_name ,
+        dt.camera_position ,
+        am.model_name ,
+        dt.alert_method ,
+        dt.status,
+        dt.alert_level ,
+        dt.create_time
+        FROM
+        detection_task dt
+        JOIN
+        ai_model am
+        ON
+        FIND_IN_SET(am.id, dt.ids)
+        WHERE
+        1=1
+        <if test="taskName != null and taskName != ''">
+            AND dt.task_name = #{taskName}
+        </if>
+        <if test="alertLevel != null and alertLevel != ''">
+            AND dt.alert_level = #{alertLevel}
+        </if>
+        <if test="startTime != null">
+            AND dt.create_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND dt.create_time &lt;= #{endTime}
+        </if>
+        LIMIT #{pageNum}, #{pageSize}
+    </select>
+
+    <select id="selectDetailedTask" resultType="com.yys.entity.DetectionTask">
+        SELECT
+            dt.task_name,
+            dt.task_description,
+            ac.camera_location,
+            ac.video_streaming,
+            am.model_name,
+            dt.notification_email
+        FROM
+            detection_task dt
+        LEFT JOIN
+            ai_camera ac
+        ON
+            dt.camera_position = ac.camera_location
+        JOIN
+            ai_model am
+        ON
+            FIND_IN_SET(am.id, dt.ids)
+        WHERE
+            dt.task_id = #{taskId};
+    </select>
+
+
+    <resultMap id="TaskMap" type="com.yys.entity.DetectionTask">
+        <result property="id" column="id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="cameraPosition" column="camera_position"/>
+        <result property="taskDescription" column="task_description"/>
+        <result property="priority" column="priority"/>
+        <result property="alertMethod" column="alert_method"/>
+        <result property="alertLevel" column="alert_level"/>
+        <result property="notificationEmail" column="notification_email"/>
+        <result property="targetCountThreshold" column="target_count_threshold"/>
+        <result property="targetDwellTime" column="target_dwell_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="status" column="status"/>
+        <result property="taskTagging" column="task_tagging"/>
+        <result property="videoStreaming" column="video_streaming"/>
+        <result property="groupName" column="group_name"/>
+        <result property="ids" column="ids"/>
+
+        <collection property="aiModels" ofType="com.yys.entity.AiModels">
+            <result property="modelName" column="model_name"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="selectDetectiontask" resultMap="TaskMap">
+        SELECT
+            dt.task_id ,
+            dt.task_name ,
+            dt.camera_position ,
+            am.model_name ,
+            dt.task_description,
+            dt.priority ,
+            dt.alert_method,
+            dt.alert_level,
+            dt.notification_email ,
+            dt.target_count_threshold,
+            dt.target_dwell_time,
+            dt.create_time,
+            dt.start_time,
+            cs.group_name,
+            dt.end_time,
+            dt.status ,
+            dt.task_tagging,
+            ac.video_streaming,
+            dt.ids
+        FROM
+            detection_task dt
+        JOIN
+            ai_model am
+        ON
+        FIND_IN_SET(am.id, dt.ids)
+        JOIN ai_camera ac
+        ON
+            dt.camera_position = ac.camera_location
+        JOIN camera_sector cs
+            on ac.camera_group = cs.id
+        WHERE
+            dt.id = #{id}
+    </select>
+
+</mapper>
+
