@@ -60,13 +60,12 @@
 
 <br>
 
-## 四、机器配置要求
+## 四、机器配置
 
-- CPU intel i5 
-- 内存 32G
-- 磁盘 1T
-- 显卡 6G
-- 系统 Ubuntu 
+![输入图片说明](ProIMG/device_config_s.png)
+
+![输入图片说明](ProIMG/device_config_l.png)
+
 
 
 <br>
