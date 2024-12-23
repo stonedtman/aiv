@@ -12,6 +12,8 @@
 
 <br>欢迎扫码进群与我们技术交流<br><br>
 
+<img src="https://gitee.com/stonedtx/stonedtaiv/raw/master/ProIMG/weixinGroup.jpg" title="Logo"  width="220">
+
 
 
 ![思通数科 A视频卫士 ，助力千行百业A转型与赋能](ProIMG/Product-Architecture.png)
