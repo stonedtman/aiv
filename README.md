@@ -30,6 +30,19 @@
 ![输入图片说明](ProIMG/login.png)
 <br>
 
+### （商业版本-部分截图）
+训练模型列表
+![输入图片说明](ProIMG/model.png)
+
+标签列表
+![输入图片说明](ProIMG/tag.png)
+
+图像标注
+![输入图片说明](ProIMG/annod.png)
+
+
+
+
 ## 一、在线体验
 
 
