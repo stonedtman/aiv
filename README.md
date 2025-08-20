@@ -9,7 +9,7 @@
 
 微信群已超过200人，请添加产品经理微信进群
 
-<img src="https://github.com/stonedtman/free-nlp-api/raw/master/ProIMG/%E8%81%94%E7%B3%BB%E6%88%91%E4%BB%AC-%E4%B8%AA%E4%BA%BA%E5%BE%AE%E4%BF%A1.jpg" title="Logo"  width="220">
+<img src="https://gitee.com/stonedtx/stonedtaiv/raw/master/ProIMG/javabloger-weixin.jpg" title="Logo"  width="220">
 
 
 <br>欢迎扫码进群与我们技术交流<br><br>
