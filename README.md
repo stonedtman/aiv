@@ -9,8 +9,7 @@
 
 微信群已超过200人，请添加产品经理微信进群
 
-<img src="https://gitee.com/stonedtx/stonedtaiv/raw/master/ProIMG/javabloger-weixin.jpg" title="Logo"  width="220">
-
+微信号：13913853100 或者 javabloger
 
 <br>欢迎扫码进群与我们技术交流<br><br>
 
